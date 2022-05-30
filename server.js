@@ -9,11 +9,13 @@ const authRouter = require("./routes/api/auth");
 
 // Connect Database
 connectDB();
+
+app.use(express.json({ extended: false }));
+// Define Routes
 app.use("/api/users", userRouter);
 app.use("/api/profile", profileRouter);
 app.use("/api/posts", postRouter);
 app.use("/api/auth", authRouter);
-// Define Routes
 
 app.get("/", (req, res) => {
   res.send("API Running");
