@@ -1,3 +1,4 @@
 {
-  "mongoURI": "mongodb+srv://newuserdb:newuserdb@mernapp.e74ot.mongodb.net/?retryWrites=true&w=majority"
+  "mongoURI": "mongodb+srv://newuserdb:newuserdb@mernapp.e74ot.mongodb.net/?retryWrites=true&w=majority",
+  "jwtSecret": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
 }
