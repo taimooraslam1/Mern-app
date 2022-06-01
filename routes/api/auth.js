@@ -42,15 +42,13 @@ authRouter.post(
       if (!user) {
         return res
           .status(400)
-          .json({ errors: [{ msg: "invalid credentials" }] });
+          .json({ errors: [{ msg: "User with this email not exist" }] });
       }
       // Match Password
 
       const isMatchPassword = await bcrypt.compare(password, user.password);
       if (!isMatchPassword) {
-        return res
-          .status(400)
-          .json({ errors: [{ msg: "invalid credentials" }] });
+        return res.status(400).json({ errors: [{ msg: "invalid password" }] });
       }
 
       // JWT
