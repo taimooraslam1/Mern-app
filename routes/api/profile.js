@@ -94,7 +94,7 @@ profileRouter.post(
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ errors: errors.array() });
     }
 
     const {
@@ -149,4 +149,132 @@ profileRouter.post(
     }
   }
 );
+
+// @route Put api/profile/experience
+// desc   Add experience into user profile
+// access private
+
+profileRouter.put(
+  "/experience",
+  authMiddleware,
+  body("title", "Please enter your experience title").not().isEmpty(),
+  body("company", "Please enter your company name").not().isEmpty(),
+  body("from", "Please enter your from date").not().isEmpty(),
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const { title, company, location, from, to, current, description } =
+      req.body;
+
+    const newExp = {
+      title,
+      company,
+      location,
+      from,
+      to,
+      current,
+      description,
+    };
+    try {
+      const profile = await Profile.findOne({ user: req.user.id });
+      profile.experience.unshift(newExp);
+      await profile.save();
+      res.status(200).send(profile);
+    } catch (error) {
+      res.status(500).send("Server Error");
+    }
+  }
+);
+
+// @route Delete api/profile/experience/:exp_id
+// desc   delete experience from user profile
+// access private
+
+profileRouter.delete(
+  "/experience/:exp_id",
+  authMiddleware,
+  async (req, res) => {
+    try {
+      const profile = await Profile.findOne({ user: req.user.id });
+      const removeIndex = profile.experience
+        .map((exp) => exp.id)
+        .indexOf(req.params.exp_id);
+      if (removeIndex === -1) {
+        return res
+          .status(400)
+          .json({ message: "Experience with this id not exist" });
+      }
+      profile.experience.splice(removeIndex, 1);
+      await profile.save();
+      res.status(200).send(profile);
+    } catch (error) {
+      res.status(500).send("Server Error");
+    }
+  }
+);
+
+// @route Put api/profile/education
+// desc   Add education into user profile
+// access private
+
+profileRouter.put(
+  "/education",
+  authMiddleware,
+  body("school", "Please enter your School name").not().isEmpty(),
+  body("degree", "Please enter your degree name").not().isEmpty(),
+  body("fieldofstudy", "Please enter your Field of Study").not().isEmpty(),
+  body("from", "Please enter your from date").not().isEmpty(),
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const { school, degree, fieldofstudy, from, to, current, description } =
+      req.body;
+
+    const newEdu = {
+      school,
+      degree,
+      fieldofstudy,
+      from,
+      to,
+      current,
+      description,
+    };
+    try {
+      const profile = await Profile.findOne({ user: req.user.id });
+      profile.education.unshift(newEdu);
+      await profile.save();
+      res.status(200).send(profile);
+    } catch (error) {
+      res.status(500).send("Server Error");
+    }
+  }
+);
+
+// @route Delete api/profile/education/:edu_id
+// desc   delete education from user profile
+// access private
+
+profileRouter.delete("/education/:edu_id", authMiddleware, async (req, res) => {
+  try {
+    const profile = await Profile.findOne({ user: req.user.id });
+    const removeIndex = profile.education
+      .map((exp) => exp.id)
+      .indexOf(req.params.edu_id);
+    if (removeIndex === -1) {
+      return res
+        .status(400)
+        .json({ message: "Education with this id not exist" });
+    }
+    profile.education.splice(removeIndex, 1);
+    await profile.save();
+    res.status(200).send(profile);
+  } catch (error) {
+    res.status(500).send("Server Error");
+  }
+});
+
 module.exports = profileRouter;
