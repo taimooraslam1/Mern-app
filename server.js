@@ -14,7 +14,7 @@ app.use(express.json({ extended: false }));
 // Define Routes
 app.use("/api/users", userRouter);
 app.use("/api/profile", profileRouter);
-app.use("/api/posts", postRouter);
+app.use("/api/post", postRouter);
 app.use("/api/auth", authRouter);
 
 app.get("/", (req, res) => {
